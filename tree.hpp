@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <list>
+#include <stack>
 
 namespace tree {
     template<typename KeyT, typename Comp>
@@ -135,8 +136,8 @@ namespace tree {
             nd2->subtr_sz_ = subtr_sz;
         }
 
-        void add_nodes(node_iter node, std::ofstream &stream);
-        void link_nodes_gr(node_iter node, std::ofstream &stream);
+        void add_nodes(std::ofstream &stream);
+        void link_nodes_gr(std::ofstream &stream);
 
         int dump_cnt = 0;
 
@@ -203,7 +204,7 @@ namespace tree {
                     }
                     else return curr;
                 }
-                return curr;
+                return nil_;
             }
 
             node_iter upper_bound(KeyT key) const {
@@ -216,11 +217,10 @@ namespace tree {
                         curr = curr->left_;
                     }
                     else if (curr->key_ < key) {
-                        if (curr->right_ != nil_ && curr->right_->key_ > key)
-                            curr = curr->right_;
+                        if (curr->right_ != nil_) curr = curr->right_;
                     }
                 }
-                return curr;
+                return nil_;
             }
 
             int distance(node_iter first, node_iter second) const {
@@ -253,8 +253,8 @@ namespace tree {
         if (root_ != nullptr)
             out << "    node_info->node_" << root_ << " [color = \"green\"];\n";
 
-        add_nodes(root_, out);
-        link_nodes_gr(root_, out);
+        add_nodes(out);
+        link_nodes_gr(out);
 
         out << "\n}";
         out.close();
@@ -266,46 +266,61 @@ namespace tree {
     }
 
     template<typename KeyT, typename Comp>
-    void rb_tree_t<KeyT, Comp>::add_nodes(node_iter node, std::ofstream &stream)
+    void rb_tree_t<KeyT, Comp>::add_nodes(std::ofstream &stream)
     {
-        if (node == nil_) return;
+        std::stack<node_iter> nd_stk;
+        nd_stk.push(root_);
 
-        stream << "    node_" << node << "[shape = Mrecord, label = \"{{" << node <<
+        node_iter node;
+
+        while (!nd_stk.empty()) {
+            node = nd_stk.top();
+            nd_stk.pop();
+
+            stream << "    node_" << node << "[shape = Mrecord, label = \"{{" << node <<
                 "} | {parent =  " << node->parent_ << "} | {key = " << node->key_ << "} | {subtr_sz = " << node->subtr_sz_ << "} | {";
 
-        if (node->left_ == nil_) stream << "nil | ";
-        else stream  << node->left_ << "| ";
+            if (node->left_ == nil_) stream << "nil | ";
+            else stream  << node->left_ << "| ";
 
-        if (node->right_ == nil_) stream << "nil";
-        else stream << node->right_;
+            if (node->right_ == nil_) stream << "nil";
+            else stream << node->right_;
 
-        stream <<"}}\",\n style=\"filled\", fillcolor=";
+            stream <<"}}\",\n style=\"filled\", fillcolor=";
 
-        if (node->color_ == black) {
-            stream << "\"grey\"];\n";
+            if (node->color_ == black) {
+                stream << "\"grey\"];\n";
+            }
+            else {
+                stream << "\"red\"];\n";
+            }
+
+            if (node->right_ != nil_) nd_stk.push(node->right_);
+            if (node->left_ != nil_)  nd_stk.push(node->left_);
         }
-        else {
-            stream << "\"red\"];\n";
-        }
-
-        add_nodes(node->left_, stream);
-        add_nodes(node->right_, stream);
     }
 
     template<typename KeyT, typename Comp>
-    void rb_tree_t<KeyT, Comp>::link_nodes_gr(node_iter node, std::ofstream &stream)
+    void rb_tree_t<KeyT, Comp>::link_nodes_gr(std::ofstream &stream)
     {
-        if (node == nil_) return;
+        std::stack<node_iter> nd_stk;
+        nd_stk.push(root_);
 
-        if (node->left_ != nil_)
-        {
-            stream << "    node_" << node << "->node_" << node->left_ << "\n";
-            link_nodes_gr(node->left_, stream);
-        }
-        if (node->right_ != nil_)
-        {
-            stream << "    node_" << node << "->node_" << node->right_ << "\n";
-            link_nodes_gr(node->right_, stream);
+        node_iter node;
+
+        while (!nd_stk.empty()) {
+            node = nd_stk.top();
+            nd_stk.pop();
+
+            if (node->left_ != nil_) {
+                stream << "    node_" << node << "->node_" << node->left_ << "\n";
+                nd_stk.push(node->left_);
+            }
+
+            if (node->right_ != nil_) {
+                stream << "    node_" << node << "->node_" << node->right_ << "\n";
+                nd_stk.push(node->right_);
+            }
         }
     }
 }
