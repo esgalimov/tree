@@ -7,14 +7,16 @@ using namespace tree;
 int main() {
     rb_tree_t<int, std::less<int>> tr;
 
+
+    tr.insert(9);
+    tr.insert(9);
+    tr.insert(11);
+
     tr.insert(5);
     tr.insert(7);
     tr.insert(3);
     tr.insert(15);
     tr.insert(1);
-    tr.insert(9);
-    tr.insert(9);
-    tr.insert(11);
 
     tr.insert(1);
     tr.insert(9);

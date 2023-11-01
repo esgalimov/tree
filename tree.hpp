@@ -194,15 +194,16 @@ namespace tree {
                 node_iter curr = root_;
 
                 while (curr != nil_) {
-                    if (curr->key_ > key) {
+                    if (Comp()(key, curr->key_)) {
                         if (curr->left_ != nil_ && curr->left_->key_ < key) return curr;
                         curr = curr->left_;
                     }
-                    else if (curr->key_ < key) {
+                    else if (key == curr->key_) return curr;
+
+                    else {
                         if (curr->right_ != nil_ && curr->right_->key_ > key) return curr;
                         curr = curr->right_;
                     }
-                    else return curr;
                 }
                 return nil_;
             }
@@ -211,25 +212,32 @@ namespace tree {
                 node_iter curr = root_;
 
                 while (curr != nil_) {
-                    if (curr->key_ > key) {
+                    if (Comp()(key, curr->key_)) {
                         if (curr->left_ != nil_ && curr->left_->key_ < key ||
                             curr->left_ == nil_) return curr;
                         curr = curr->left_;
                     }
-                    else if (curr->key_ < key) {
+                    else
                         if (curr->right_ != nil_) curr = curr->right_;
-                    }
                 }
                 return nil_;
             }
 
             int distance(node_iter first, node_iter second) const {
-                if (second->parent_ == first)
-                    return second->left_->subtr_sz_ - first->left_->subtr_sz_ + 2;
-                else if (first->parent_ == second)
-                    return first->right_->subtr_sz_ + 1;
-                else
-                    return second->left_->subtr_sz_ + first->right_->subtr_sz_ + 2;
+                int lower_cnt = 0, upper_cnt = 0;
+
+                if (first == root_ || first == first->parent_->left_)
+                    lower_cnt = first->left_->subtr_sz_;
+                else if (first != nil_)
+                    lower_cnt = first->parent_->left_->subtr_sz_ + 1;
+
+                if (second == root_ || second == second->parent_->right_)
+                    upper_cnt = second->right_->subtr_sz_ + 1;
+                else if (second != nil_)
+                    upper_cnt = second->parent_->right_->subtr_sz_ + 2;
+
+                return root_->subtr_sz_ - lower_cnt - upper_cnt;
+
             }
 
             void dump();
