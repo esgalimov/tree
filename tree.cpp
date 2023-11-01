@@ -1,10 +1,11 @@
 #include <iostream>
+#include <functional>
 #include "tree_debug.hpp"
 
 using namespace tree;
 
 int main() {
-    rb_tree_t<int> tr;
+    rb_tree_t<int, std::less<int>> tr;
 
     tr.insert(5);
     tr.insert(7);

@@ -8,9 +8,8 @@ std::ofstream out;
 int dump_cnt = 0;
 
 using namespace tree;
-using node_iter = typename std::list<tree::node_t<int>>::pointer;
 
-void dump(rb_tree_t<int> &tr) {
+void dump(tree_t &tr) {
     out.open("graphviz.dot");
 
     if (!out.is_open()) { exit(1); }
@@ -32,7 +31,7 @@ void dump(rb_tree_t<int> &tr) {
     dump_cnt++;
 }
 
-void graphviz_init(rb_tree_t<int> &tr)
+void graphviz_init(tree_t &tr)
 {
     auto root = tr.get_root();
 

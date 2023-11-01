@@ -19,7 +19,7 @@ namespace tree {
             key_(key), color_(color), left_(left), right_(right), subtr_sz_(subtr_sz) {};
     };
 
-    template<typename KeyT>
+    template<typename KeyT, typename Comp>
     class rb_tree_t {
 
         std::list<node_t<KeyT>> nodes_;
@@ -153,16 +153,7 @@ namespace tree {
                     node_iter curr = root_;
 
                     while (curr != nil_) {
-                        if (key > curr->key_) {
-                            curr->subtr_sz_++;
-                            if (curr->right_ == nil_) {
-                                curr->right_ = &nodes_.back();
-                                curr->right_->parent_ = curr;
-                                break;
-                            }
-                            curr = curr->right_;
-                        }
-                        else if (key < curr->key_) {
+                        if (Comp()(key, curr->key_)) {
                             curr->subtr_sz_++;
                             if (curr->left_ == nil_) {
                                 curr->left_ = &nodes_.back();
@@ -171,13 +162,22 @@ namespace tree {
                             }
                             curr = curr->left_;
                         }
-                        else {
+                        else if (key == curr->key_){
                             curr = curr->parent_;
                             while (curr != nullptr) {
                                 curr->subtr_sz_--;
                                 curr = curr->parent_;
                             }
                             return;
+                        }
+                        else {
+                            curr->subtr_sz_++;
+                            if (curr->right_ == nil_) {
+                                curr->right_ = &nodes_.back();
+                                curr->right_->parent_ = curr;
+                                break;
+                            }
+                            curr = curr->right_;
                         }
                     }
                     balance_tree(&nodes_.back());
