@@ -1,36 +1,57 @@
 digraph
 {
-    node_info[shape = record, label = "{root = 0x104e014d0}"];
+    node_info[shape = record, label = "{root = 0x105501470}"];
 
-    node_info->node_0x104e014d0 [color = "green"];
-    node_0x104e014d0[shape = Mrecord, label = "{{0x104e014d0} | {parent =  0x0} | {key = 7} | {0x104e01350| 0x104e01410}}",
+    node_info->node_0x105501470 [color = "green"];
+    node_0x105501470[shape = Mrecord, label = "{{0x105501470} | {parent =  0x0} | {key = 7} | {subtr_sz = 8} | {0x105501410| 0x1055013b0}}",
             style="filled", fillcolor="grey"];
-    node_0x104e01350[shape = Mrecord, label = "{{0x104e01350} | {parent =  0x104e014d0} | {key = 5} | {0x104e01290| 0x104e012f0}}",
+    node_0x105501410[shape = Mrecord, label = "{{0x105501410} | {parent =  0x105501470} | {key = 3} | {subtr_sz = 3} | {0x105501230| 0x1055012f0}}",
             style="filled", fillcolor="grey"];
-    node_0x104e01290[shape = Mrecord, label = "{{0x104e01290} | {parent =  0x104e01350} | {key = 3} | {0x104e011d0| 0x104e01230}}",
+    node_0x105501230[shape = Mrecord, label = "{{0x105501230} | {parent =  0x105501410} | {key = 1} | {subtr_sz = 1} | {0x1055014d0| 0x1055014d0}}",
             style="filled", fillcolor="red"];
-    node_0x104e011d0[shape = Mrecord, label = "{{0x104e011d0} | {parent =  0x104e01290} | {key = 2} | {0x104e01170| 0x0}}",
+    node_0x1055014d0[shape = Mrecord, label = "{{0x1055014d0} | {parent =  0x1055012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
             style="filled", fillcolor="grey"];
-    node_0x104e01170[shape = Mrecord, label = "{{0x104e01170} | {parent =  0x104e011d0} | {key = 1} | {0x0| 0x0}}",
+    node_0x1055014d0[shape = Mrecord, label = "{{0x1055014d0} | {parent =  0x1055012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
+            style="filled", fillcolor="grey"];
+    node_0x1055012f0[shape = Mrecord, label = "{{0x1055012f0} | {parent =  0x105501410} | {key = 5} | {subtr_sz = 1} | {0x1055014d0| 0x1055014d0}}",
             style="filled", fillcolor="red"];
-    node_0x104e01230[shape = Mrecord, label = "{{0x104e01230} | {parent =  0x104e01290} | {key = 4} | {0x0| 0x0}}",
+    node_0x1055014d0[shape = Mrecord, label = "{{0x1055014d0} | {parent =  0x1055012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
             style="filled", fillcolor="grey"];
-    node_0x104e012f0[shape = Mrecord, label = "{{0x104e012f0} | {parent =  0x104e01350} | {key = 6} | {0x0| 0x0}}",
+    node_0x1055014d0[shape = Mrecord, label = "{{0x1055014d0} | {parent =  0x1055012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
             style="filled", fillcolor="grey"];
-    node_0x104e01410[shape = Mrecord, label = "{{0x104e01410} | {parent =  0x104e014d0} | {key = 9} | {0x104e013b0| 0x104e01470}}",
+    node_0x1055013b0[shape = Mrecord, label = "{{0x1055013b0} | {parent =  0x105501470} | {key = 11} | {subtr_sz = 4} | {0x105501350| 0x105501290}}",
+            style="filled", fillcolor="red"];
+    node_0x105501350[shape = Mrecord, label = "{{0x105501350} | {parent =  0x1055013b0} | {key = 9} | {subtr_sz = 1} | {0x1055014d0| 0x1055014d0}}",
             style="filled", fillcolor="grey"];
-    node_0x104e013b0[shape = Mrecord, label = "{{0x104e013b0} | {parent =  0x104e01410} | {key = 8} | {0x0| 0x0}}",
+    node_0x1055014d0[shape = Mrecord, label = "{{0x1055014d0} | {parent =  0x1055012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
             style="filled", fillcolor="grey"];
-    node_0x104e01470[shape = Mrecord, label = "{{0x104e01470} | {parent =  0x104e01410} | {key = 10} | {0x0| 0x0}}",
+    node_0x1055014d0[shape = Mrecord, label = "{{0x1055014d0} | {parent =  0x1055012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
             style="filled", fillcolor="grey"];
-    node_0x104e014d0->node_0x104e01350
-    node_0x104e01350->node_0x104e01290
-    node_0x104e01290->node_0x104e011d0
-    node_0x104e011d0->node_0x104e01170
-    node_0x104e01290->node_0x104e01230
-    node_0x104e01350->node_0x104e012f0
-    node_0x104e014d0->node_0x104e01410
-    node_0x104e01410->node_0x104e013b0
-    node_0x104e01410->node_0x104e01470
+    node_0x105501290[shape = Mrecord, label = "{{0x105501290} | {parent =  0x1055013b0} | {key = 15} | {subtr_sz = 2} | {0x105501050| 0x1055014d0}}",
+            style="filled", fillcolor="grey"];
+    node_0x105501050[shape = Mrecord, label = "{{0x105501050} | {parent =  0x105501290} | {key = 13} | {subtr_sz = 1} | {0x1055014d0| 0x1055014d0}}",
+            style="filled", fillcolor="red"];
+    node_0x1055014d0[shape = Mrecord, label = "{{0x1055014d0} | {parent =  0x1055012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
+            style="filled", fillcolor="grey"];
+    node_0x1055014d0[shape = Mrecord, label = "{{0x1055014d0} | {parent =  0x1055012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
+            style="filled", fillcolor="grey"];
+    node_0x1055014d0[shape = Mrecord, label = "{{0x1055014d0} | {parent =  0x1055012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
+            style="filled", fillcolor="grey"];
+    node_0x105501470->node_0x105501410
+    node_0x105501410->node_0x105501230
+    node_0x105501230->node_0x1055014d0
+    node_0x105501230->node_0x1055014d0
+    node_0x105501410->node_0x1055012f0
+    node_0x1055012f0->node_0x1055014d0
+    node_0x1055012f0->node_0x1055014d0
+    node_0x105501470->node_0x1055013b0
+    node_0x1055013b0->node_0x105501350
+    node_0x105501350->node_0x1055014d0
+    node_0x105501350->node_0x1055014d0
+    node_0x1055013b0->node_0x105501290
+    node_0x105501290->node_0x105501050
+    node_0x105501050->node_0x1055014d0
+    node_0x105501050->node_0x1055014d0
+    node_0x105501290->node_0x1055014d0
 
 }

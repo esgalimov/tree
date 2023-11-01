@@ -49,7 +49,7 @@ void add_nodes(node_iter node)
 
 
     out << "    node_" << node << "[shape = Mrecord, label = \"{{" << node <<
-            "} | {parent =  " << node->parent_ << "} | {key = " << node->key_ << "} | {" << node->left_ << "| "<< node->right_ <<"}}\",\n\
+            "} | {parent =  " << node->parent_ << "} | {key = " << node->key_ << "} | {subtr_sz = " << node->subtr_sz_ << "} | {" << node->left_ << "| "<< node->right_ <<"}}\",\n\
             style=\"filled\", fillcolor=";
 
     if (node->color_ == black) {
