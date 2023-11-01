@@ -1,57 +1,30 @@
 digraph
 {
-    node_info[shape = record, label = "{root = 0x105001470}"];
+    node_info[shape = record, label = "{root = 0x105401470}"];
 
-    node_info->node_0x105001470 [color = "green"];
-    node_0x105001470[shape = Mrecord, label = "{{0x105001470} | {parent =  0x0} | {key = 7} | {subtr_sz = 8} | {0x105001410| 0x1050013b0}}",
-            style="filled", fillcolor="grey"];
-    node_0x105001410[shape = Mrecord, label = "{{0x105001410} | {parent =  0x105001470} | {key = 3} | {subtr_sz = 3} | {0x105001230| 0x1050012f0}}",
-            style="filled", fillcolor="grey"];
-    node_0x105001230[shape = Mrecord, label = "{{0x105001230} | {parent =  0x105001410} | {key = 1} | {subtr_sz = 1} | {0x1050014d0| 0x1050014d0}}",
-            style="filled", fillcolor="red"];
-    node_0x1050014d0[shape = Mrecord, label = "{{0x1050014d0} | {parent =  0x1050012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
-            style="filled", fillcolor="grey"];
-    node_0x1050014d0[shape = Mrecord, label = "{{0x1050014d0} | {parent =  0x1050012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
-            style="filled", fillcolor="grey"];
-    node_0x1050012f0[shape = Mrecord, label = "{{0x1050012f0} | {parent =  0x105001410} | {key = 5} | {subtr_sz = 1} | {0x1050014d0| 0x1050014d0}}",
-            style="filled", fillcolor="red"];
-    node_0x1050014d0[shape = Mrecord, label = "{{0x1050014d0} | {parent =  0x1050012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
-            style="filled", fillcolor="grey"];
-    node_0x1050014d0[shape = Mrecord, label = "{{0x1050014d0} | {parent =  0x1050012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
-            style="filled", fillcolor="grey"];
-    node_0x1050013b0[shape = Mrecord, label = "{{0x1050013b0} | {parent =  0x105001470} | {key = 11} | {subtr_sz = 4} | {0x105001350| 0x105001290}}",
-            style="filled", fillcolor="red"];
-    node_0x105001350[shape = Mrecord, label = "{{0x105001350} | {parent =  0x1050013b0} | {key = 9} | {subtr_sz = 1} | {0x1050014d0| 0x1050014d0}}",
-            style="filled", fillcolor="grey"];
-    node_0x1050014d0[shape = Mrecord, label = "{{0x1050014d0} | {parent =  0x1050012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
-            style="filled", fillcolor="grey"];
-    node_0x1050014d0[shape = Mrecord, label = "{{0x1050014d0} | {parent =  0x1050012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
-            style="filled", fillcolor="grey"];
-    node_0x105001290[shape = Mrecord, label = "{{0x105001290} | {parent =  0x1050013b0} | {key = 15} | {subtr_sz = 2} | {0x105001050| 0x1050014d0}}",
-            style="filled", fillcolor="grey"];
-    node_0x105001050[shape = Mrecord, label = "{{0x105001050} | {parent =  0x105001290} | {key = 13} | {subtr_sz = 1} | {0x1050014d0| 0x1050014d0}}",
-            style="filled", fillcolor="red"];
-    node_0x1050014d0[shape = Mrecord, label = "{{0x1050014d0} | {parent =  0x1050012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
-            style="filled", fillcolor="grey"];
-    node_0x1050014d0[shape = Mrecord, label = "{{0x1050014d0} | {parent =  0x1050012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
-            style="filled", fillcolor="grey"];
-    node_0x1050014d0[shape = Mrecord, label = "{{0x1050014d0} | {parent =  0x1050012f0} | {key = 0} | {subtr_sz = 0} | {0x0| 0x0}}",
-            style="filled", fillcolor="grey"];
-    node_0x105001470->node_0x105001410
-    node_0x105001410->node_0x105001230
-    node_0x105001230->node_0x1050014d0
-    node_0x105001230->node_0x1050014d0
-    node_0x105001410->node_0x1050012f0
-    node_0x1050012f0->node_0x1050014d0
-    node_0x1050012f0->node_0x1050014d0
-    node_0x105001470->node_0x1050013b0
-    node_0x1050013b0->node_0x105001350
-    node_0x105001350->node_0x1050014d0
-    node_0x105001350->node_0x1050014d0
-    node_0x1050013b0->node_0x105001290
-    node_0x105001290->node_0x105001050
-    node_0x105001050->node_0x1050014d0
-    node_0x105001050->node_0x1050014d0
-    node_0x105001290->node_0x1050014d0
+    node_info->node_0x105401470 [color = "green"];
+    node_0x105401470[shape = Mrecord, label = "{{0x105401470} | {parent =  0x0} | {key = 7} | {subtr_sz = 8} | {0x105401410| 0x1054013b0}}",
+ style="filled", fillcolor="grey"];
+    node_0x105401410[shape = Mrecord, label = "{{0x105401410} | {parent =  0x105401470} | {key = 3} | {subtr_sz = 3} | {0x105401230| 0x1054012f0}}",
+ style="filled", fillcolor="grey"];
+    node_0x105401230[shape = Mrecord, label = "{{0x105401230} | {parent =  0x105401410} | {key = 1} | {subtr_sz = 1} | {nil | nil}}",
+ style="filled", fillcolor="red"];
+    node_0x1054012f0[shape = Mrecord, label = "{{0x1054012f0} | {parent =  0x105401410} | {key = 5} | {subtr_sz = 1} | {nil | nil}}",
+ style="filled", fillcolor="red"];
+    node_0x1054013b0[shape = Mrecord, label = "{{0x1054013b0} | {parent =  0x105401470} | {key = 11} | {subtr_sz = 4} | {0x105401350| 0x105401290}}",
+ style="filled", fillcolor="red"];
+    node_0x105401350[shape = Mrecord, label = "{{0x105401350} | {parent =  0x1054013b0} | {key = 9} | {subtr_sz = 1} | {nil | nil}}",
+ style="filled", fillcolor="grey"];
+    node_0x105401290[shape = Mrecord, label = "{{0x105401290} | {parent =  0x1054013b0} | {key = 15} | {subtr_sz = 2} | {0x105401050| nil}}",
+ style="filled", fillcolor="grey"];
+    node_0x105401050[shape = Mrecord, label = "{{0x105401050} | {parent =  0x105401290} | {key = 13} | {subtr_sz = 1} | {nil | nil}}",
+ style="filled", fillcolor="red"];
+    node_0x105401470->node_0x105401410
+    node_0x105401410->node_0x105401230
+    node_0x105401410->node_0x1054012f0
+    node_0x105401470->node_0x1054013b0
+    node_0x1054013b0->node_0x105401350
+    node_0x1054013b0->node_0x105401290
+    node_0x105401290->node_0x105401050
 
 }

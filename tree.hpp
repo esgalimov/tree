@@ -1,29 +1,25 @@
 #pragma once
 
-#include <iostream>
+#include <fstream>
 #include <list>
 
 namespace tree {
-
-    // временно нарушил инкапсуляцию для графического дебага
-    enum color_t { red, black };
-
-    template<typename KeyT>
-    struct node_t {
-        KeyT key_;
-        node_t *left_, *right_, *parent_ = nullptr;
-        color_t color_;
-        int subtr_sz_;
-
-        node_t(KeyT key, color_t color = black, node_t* left = nullptr, node_t* right = nullptr, int subtr_sz = 0) :
-            key_(key), color_(color), left_(left), right_(right), subtr_sz_(subtr_sz) {};
-    };
-
     template<typename KeyT, typename Comp>
     class rb_tree_t {
+        enum color_t { red, black };
 
-        std::list<node_t<KeyT>> nodes_;
-        using node_iter = typename std::list<node_t<KeyT>>::pointer;
+        struct node_t {
+            KeyT key_;
+            node_t *left_, *right_, *parent_ = nullptr;
+            color_t color_;
+            int subtr_sz_;
+
+            node_t(KeyT key, color_t color = black, node_t* left = nullptr, node_t* right = nullptr, int subtr_sz = 0) :
+                key_(key), color_(color), left_(left), right_(right), subtr_sz_(subtr_sz) {};
+        };
+
+        std::list<node_t> nodes_;
+        using node_iter = typename std::list<node_t>::pointer;
 
         node_iter nil_ = nullptr, root_ = nullptr;
 
@@ -139,6 +135,11 @@ namespace tree {
             nd2->subtr_sz_ = subtr_sz;
         }
 
+        void add_nodes(node_iter node, std::ofstream &stream);
+        void link_nodes_gr(node_iter node, std::ofstream &stream);
+
+        int dump_cnt = 0;
+
         public:
             rb_tree_t() {
                 nodes_.emplace_back(0);
@@ -231,6 +232,82 @@ namespace tree {
                     return second->left_->subtr_sz_ + first->right_->subtr_sz_ + 2;
             }
 
-            node_iter get_root() const { return root_; }
+            void dump();
     };
+
+
+    template<typename KeyT, typename Comp>
+    void rb_tree_t<KeyT, Comp>::dump() {
+        std::ofstream out;
+
+        out.open("graphviz.dot");
+
+        if (!out.is_open()) {
+            std::cerr << "Can't open graphviz.dot" << std::endl;
+            return;
+        }
+
+        out << "digraph\n{\n";
+        out << "    node_info[shape = record, label = \"{root = " << root_ << "}\"];\n\n";
+
+        if (root_ != nullptr)
+            out << "    node_info->node_" << root_ << " [color = \"green\"];\n";
+
+        add_nodes(root_, out);
+        link_nodes_gr(root_, out);
+
+        out << "\n}";
+        out.close();
+
+        std::string cmd = "dot ./graphviz.dot -Tpng -o ./tree_dump", cmd_end = ".png";
+
+        cmd.append(std::to_string(dump_cnt++)).append(cmd_end);
+        std::system(cmd.data());
+    }
+
+    template<typename KeyT, typename Comp>
+    void rb_tree_t<KeyT, Comp>::add_nodes(node_iter node, std::ofstream &stream)
+    {
+        if (node == nil_) return;
+
+        stream << "    node_" << node << "[shape = Mrecord, label = \"{{" << node <<
+                "} | {parent =  " << node->parent_ << "} | {key = " << node->key_ << "} | {subtr_sz = " << node->subtr_sz_ << "} | {";
+
+        if (node->left_ == nil_) stream << "nil | ";
+        else stream  << node->left_ << "| ";
+
+        if (node->right_ == nil_) stream << "nil";
+        else stream << node->right_;
+
+        stream <<"}}\",\n style=\"filled\", fillcolor=";
+
+        if (node->color_ == black) {
+            stream << "\"grey\"];\n";
+        }
+        else {
+            stream << "\"red\"];\n";
+        }
+
+        add_nodes(node->left_, stream);
+        add_nodes(node->right_, stream);
+    }
+
+    template<typename KeyT, typename Comp>
+    void rb_tree_t<KeyT, Comp>::link_nodes_gr(node_iter node, std::ofstream &stream)
+    {
+        if (node == nil_) return;
+
+        if (node->left_ != nil_)
+        {
+            stream << "    node_" << node << "->node_" << node->left_ << "\n";
+            link_nodes_gr(node->left_, stream);
+        }
+        if (node->right_ != nil_)
+        {
+            stream << "    node_" << node << "->node_" << node->right_ << "\n";
+            link_nodes_gr(node->right_, stream);
+        }
+    }
 }
+
+

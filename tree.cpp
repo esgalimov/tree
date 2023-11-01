@@ -1,6 +1,6 @@
 #include <iostream>
 #include <functional>
-#include "tree_debug.hpp"
+#include "tree.hpp"
 
 using namespace tree;
 
@@ -20,7 +20,7 @@ int main() {
     tr.insert(9);
     tr.insert(13);
 
-    dump(tr);
+    tr.dump();
 
     auto fst = tr.lower_bound(2);
     auto snd = tr.upper_bound(10);
