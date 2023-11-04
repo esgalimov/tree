@@ -136,8 +136,44 @@ namespace tree {
             nd2->subtr_sz_ = subtr_sz;
         }
 
-        void add_nodes(std::ofstream &stream);
-        void link_nodes_gr(std::ofstream &stream);
+        void copy_tree(const rb_tree_t& tr) {
+            if (tr.root_ == tr.nil_) return;
+
+            nodes_.emplace_back(tr.root_->key_, tr.root_->color_,
+                                nil_, nil_, tr.root_->subtr_sz_);
+            node_iter clone = &nodes_.back(),
+                        orig  = tr.root_;
+            root_ = clone;
+
+            while (orig != tr.nil_ && orig != nullptr) {
+                if (orig->left_ != tr.nil_ && clone->left_ == nil_) {
+                    nodes_.emplace_back(orig->left_->key_, orig->left_->color_,
+                                        nil_, nil_, orig->left_->subtr_sz_);
+                    clone->left_ = &nodes_.back();
+                    clone->left_->parent_ = clone;
+
+                    orig = orig->left_;
+                    clone = clone->left_;
+
+                }
+                else if (orig->right_ != tr.nil_ && clone->right_ == nil_) {
+                    nodes_.emplace_back(orig->right_->key_, orig->right_->color_,
+                                        nil_, nil_, orig->right_->subtr_sz_);
+                    clone->right_ = &nodes_.back();
+                    clone->right_->parent_ = clone;
+
+                    orig = orig->right_;
+                    clone = clone->right_;
+                }
+                else {
+                    orig = orig->parent_;
+                    clone = clone->parent_;
+                }
+            }
+        }
+
+        void add_nodes(std::ofstream &stream) const;
+        void link_nodes_gr(std::ofstream &stream) const;
 
         int dump_cnt = 0;
 
@@ -170,6 +206,7 @@ namespace tree {
                                 curr->subtr_sz_--;
                                 curr = curr->parent_;
                             }
+                            nodes_.pop_back();
                             return;
                         }
                         else {
@@ -241,6 +278,39 @@ namespace tree {
             }
 
             void dump();
+
+            // BIG FIVE
+            ~rb_tree_t() = default;
+
+            rb_tree_t(const rb_tree_t& tr) {
+                rb_tree_t();
+                copy_tree(tr);
+            }
+
+            rb_tree_t(rb_tree_t&& tr) : nodes_(std::move(tr.nodes_)) {
+                nil_ = &nodes_.front();
+                if (tr.root_ != tr.nil_) root_ = &(*std::next(nodes_.begin()));
+                else root_ = nil_;
+            }
+
+            rb_tree_t& operator=(const rb_tree_t& tr) {
+                if (this == &tr) return *this;
+
+                nodes_.erase(std::next(nodes_.begin()), nodes_.end());
+                copy_tree(tr);
+                return *this;
+            }
+
+            rb_tree_t& operator=(rb_tree_t&& tr) {
+                if (this == &tr) return *this;
+
+                nodes_ = std::move(tr.nodes_);
+                nil_ = &nodes_.front();
+                if (tr.root_ != tr.nil_) root_ = &(*std::next(nodes_.begin()));
+                else root_ = nil_;
+
+                return *this;
+            }
     };
 
 
@@ -274,7 +344,7 @@ namespace tree {
     }
 
     template<typename KeyT, typename Comp>
-    void rb_tree_t<KeyT, Comp>::add_nodes(std::ofstream &stream)
+    void rb_tree_t<KeyT, Comp>::add_nodes(std::ofstream &stream) const
     {
         std::stack<node_iter> nd_stk;
         nd_stk.push(root_);
@@ -309,7 +379,7 @@ namespace tree {
     }
 
     template<typename KeyT, typename Comp>
-    void rb_tree_t<KeyT, Comp>::link_nodes_gr(std::ofstream &stream)
+    void rb_tree_t<KeyT, Comp>::link_nodes_gr(std::ofstream &stream) const
     {
         std::stack<node_iter> nd_stk;
         nd_stk.push(root_);
