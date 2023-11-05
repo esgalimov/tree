@@ -1,4 +1,4 @@
-# Red-black tree with fast
+# Red-black tree with fast distance
 1. `cmake -B build` or if graphviz is installed on your computer `cmake -B build -DCMAKE_CXX_FLAGS="-DDUMP"` to have tree graphviz dumps in dumps directory.
 2. `cd build`.
 3. `make`.
