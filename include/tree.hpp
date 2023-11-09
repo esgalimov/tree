@@ -7,7 +7,7 @@
 
 namespace tree {
     template<typename KeyT = int, typename Comp = std::less<int> >
-    class rb_tree_t {
+    class rb_tree_t final{
         enum color_t { red, black };
 
         struct node_t {
@@ -260,9 +260,9 @@ namespace tree {
             }
 
             int distance(node_iter first, node_iter second) const {
-                int lower_cnt = 0, upper_cnt = 0;
-
                 if (first == nil_ && second == nil_) return 0;
+
+                int lower_cnt = 0, upper_cnt = 0;
 
                 if (first != nil_) {
                     lower_cnt = first->left_->subtr_sz_;
@@ -301,7 +301,7 @@ namespace tree {
                 copy_tree(tr);
             }
 
-            rb_tree_t(rb_tree_t&& tr) :
+            rb_tree_t(rb_tree_t&& tr) noexcept :
                 nodes_(std::move(tr.nodes_)), nil_(tr.nil_), root_(tr.root_) {}
 
             rb_tree_t& operator=(const rb_tree_t& tr) {
@@ -312,7 +312,7 @@ namespace tree {
                 return *this;
             }
 
-            rb_tree_t& operator=(rb_tree_t&& tr) {
+            rb_tree_t& operator=(rb_tree_t&& tr) noexcept {
                 if (this == &tr) return *this;
 
                 nodes_ = std::move(tr.nodes_);
