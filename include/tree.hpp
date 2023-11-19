@@ -26,6 +26,8 @@ namespace tree {
 
         node_iter nil_ = nullptr, root_ = nullptr;
 
+        int dump_cnt = 0;
+
         node_iter get_brother(node_iter node) const {
             if (node == node->parent_->left_)
                 return node->parent_->right;
@@ -44,32 +46,40 @@ namespace tree {
             return node->parent_->parent_;
         }
 
+        void parent_rotate(node_iter new_node) {
+            if (new_node == new_node->parent_->right_ &&
+                new_node->parent_ == get_grandad(new_node)->left_) {
+                left_rotate(new_node->parent_);
+            }
+            else if (new_node == new_node->parent_->left_ &&
+                     new_node->parent_ == get_grandad(new_node)->right_) {
+                right_rotate(new_node->parent_);
+            }
+        }
+
+        void grandad_rotate(node_iter new_node) {
+            if (new_node == new_node->parent_->left_ &&
+                    new_node->parent_ == get_grandad(new_node)->left_) {
+                    new_node->parent_->color_ = black;
+                    get_grandad(new_node)->color_ = red;
+                    right_rotate(get_grandad(new_node));
+                }
+            else if (new_node == new_node->parent_->right_ &&
+                        new_node->parent_ == get_grandad(new_node)->right_) {
+                new_node->parent_->color_ = black;
+                get_grandad(new_node)->color_ = red;
+                left_rotate(get_grandad(new_node));
+            }
+        }
+
         void balance(node_iter new_node) {
             if (new_node->parent_->color_ == black) return;
 
             node_iter uncle = get_uncle(new_node);
 
             if (uncle == nil_ || uncle->color_ == black) {
-                if (new_node == new_node->parent_->right_ &&
-                    new_node->parent_ == get_grandad(new_node)->left_) {
-                    left_rotate(new_node->parent_);
-                }
-                else if (new_node == new_node->parent_->left_ &&
-                         new_node->parent_ == get_grandad(new_node)->right_) {
-                    right_rotate(new_node->parent_);
-                }
-                if (new_node == new_node->parent_->left_ &&
-                    new_node->parent_ == get_grandad(new_node)->left_) {
-                    new_node->parent_->color_ = black;
-                    get_grandad(new_node)->color_ = red;
-                    right_rotate(get_grandad(new_node));
-                }
-                else if (new_node == new_node->parent_->right_ &&
-                         new_node->parent_ == get_grandad(new_node)->right_) {
-                    new_node->parent_->color_ = black;
-                    get_grandad(new_node)->color_ = red;
-                    left_rotate(get_grandad(new_node));
-                }
+                parent_rotate(new_node);
+                grandad_rotate(new_node);
             }
             else {
                 new_node->parent_->color_ = black;
@@ -138,6 +148,18 @@ namespace tree {
             nd2->subtr_sz_ = subtr_sz;
         }
 
+        void clone_left(node_iter clone, node_iter orig) {
+            clone->left_ = new node_t{orig->left_->key_, orig->left_->color_,
+                                              nil_, nil_, clone, orig->left_->subtr_sz_};
+            nodes_.push_back(clone->left_);
+        }
+
+        void clone_right(node_iter clone, node_iter orig) {
+            clone->right_ = new node_t{orig->right_->key_, orig->right_->color_,
+                                               nil_, nil_, clone, orig->right_->subtr_sz_};
+            nodes_.push_back(clone->right_);
+        }
+
         void copy_tree(const rb_tree_t& tr) {
             if (tr.root_ == tr.nil_) return;
 
@@ -150,18 +172,13 @@ namespace tree {
 
             while (orig != tr.nil_ && orig != nullptr) {
                 if (orig->left_ != tr.nil_ && clone->left_ == nil_) {
-                    clone->left_ = new node_t{orig->left_->key_, orig->left_->color_,
-                                              nil_, nil_, clone, orig->left_->subtr_sz_};
-                    nodes_.push_back(clone->left_);
+                    clone_left(clone, orig);
 
                     orig = orig->left_;
                     clone = clone->left_;
-
                 }
                 else if (orig->right_ != tr.nil_ && clone->right_ == nil_) {
-                    clone->right_ = new node_t{orig->right_->key_, orig->right_->color_,
-                                               nil_, nil_, clone, orig->right_->subtr_sz_};
-                    nodes_.push_back(clone->right_);
+                    clone_right(clone, orig);
 
                     orig = orig->right_;
                     clone = clone->right_;
@@ -176,7 +193,69 @@ namespace tree {
         void add_nodes(std::ofstream &stream) const;
         void link_nodes_gr(std::ofstream &stream) const;
 
-        int dump_cnt = 0;
+        void insert_leaf(KeyT key) {
+            node_iter curr = root_;
+
+            while (curr != nil_) {
+                if (Comp()(key, curr->key_)) {
+                    curr->subtr_sz_++;
+                    if (curr->left_ == nil_) {
+                        curr->left_ = new node_t{key, red, nil_, nil_, curr, 1};
+                        nodes_.push_back(curr->left_);
+                        balance(curr->left_);
+                        break;
+                    }
+                    curr = curr->left_;
+                }
+                else if (key == curr->key_){
+                    curr = curr->parent_;
+                    while (curr != nullptr) {
+                        curr->subtr_sz_--;
+                        curr = curr->parent_;
+                    }
+                    return;
+                }
+                else {
+                    curr->subtr_sz_++;
+                    if (curr->right_ == nil_) {
+                        curr->right_ = new node_t{key, red, nil_, nil_, curr, 1};
+                        nodes_.push_back(curr->right_);
+                        balance(curr->right_);
+                        break;
+                    }
+                    curr = curr->right_;
+                }
+            }
+        }
+
+        void insert_root(KeyT key) {
+            root_ = new node_t{key, black, nil_, nil_, nullptr, 1};
+            nodes_.push_back(root_);
+        }
+
+        int count_parents_left_sizes(node_iter first) const {
+            node_iter curr = first;
+            int lower_cnt = 0;
+
+            while (curr != root_) {
+                if (curr == curr->parent_->right_)
+                    lower_cnt += curr->parent_->left_->subtr_sz_ + 1;
+                curr = curr->parent_;
+            }
+            return lower_cnt;
+        }
+
+        int count_parents_right_sizes(node_iter second) const {
+            node_iter curr = second;
+            int upper_cnt = 0;
+
+            while (curr != root_) {
+                if (curr == curr->parent_->left_)
+                    upper_cnt += curr->parent_->right_->subtr_sz_ + 1;
+                curr = curr->parent_;
+            }
+            return upper_cnt;
+        }
 
         public:
             rb_tree_t() : nil_(new node_t{0}), root_(nil_) {
@@ -184,44 +263,8 @@ namespace tree {
             }
 
             void insert(KeyT key) {
-                if (root_ != nil_) {
-                    node_iter curr = root_;
-
-                    while (curr != nil_) {
-                        if (Comp()(key, curr->key_)) {
-                            curr->subtr_sz_++;
-                            if (curr->left_ == nil_) {
-                                curr->left_ = new node_t{key, red, nil_, nil_, curr, 1};
-                                nodes_.push_back(curr->left_);
-                                balance(curr->left_);
-                                break;
-                            }
-                            curr = curr->left_;
-                        }
-                        else if (key == curr->key_){
-                            curr = curr->parent_;
-                            while (curr != nullptr) {
-                                curr->subtr_sz_--;
-                                curr = curr->parent_;
-                            }
-                            return;
-                        }
-                        else {
-                            curr->subtr_sz_++;
-                            if (curr->right_ == nil_) {
-                                curr->right_ = new node_t{key, red, nil_, nil_, curr, 1};
-                                nodes_.push_back(curr->right_);
-                                balance(curr->right_);
-                                break;
-                            }
-                            curr = curr->right_;
-                        }
-                    }
-                }
-                else {
-                    root_ = new node_t{key, black, nil_, nil_, nullptr, 1};
-                    nodes_.push_back(root_);
-                }
+                if (root_ != nil_) insert_leaf(key);
+                else               insert_root(key);
             }
 
             node_iter lower_bound(KeyT key) const {
@@ -260,29 +303,12 @@ namespace tree {
 
                 int lower_cnt = 0, upper_cnt = 0;
 
-                if (first != nil_) {
-                    lower_cnt = first->left_->subtr_sz_;
+                if (first != nil_)
+                    lower_cnt = first->left_->subtr_sz_ + count_parents_left_sizes(first);
 
-                    node_iter curr = first;
+                if (second != nil_)
+                    upper_cnt = second->right_->subtr_sz_ + 1 + count_parents_right_sizes(second);
 
-                    while (curr != root_) {
-                        if (curr == curr->parent_->right_)
-                            lower_cnt += curr->parent_->left_->subtr_sz_ + 1;
-                        curr = curr->parent_;
-                    }
-                }
-
-                if (second != nil_) {
-                    upper_cnt = second->right_->subtr_sz_ + 1;
-
-                    node_iter curr = second;
-
-                    while (curr != root_) {
-                        if (curr == curr->parent_->left_)
-                            upper_cnt += curr->parent_->right_->subtr_sz_ + 1;
-                        curr = curr->parent_;
-                    }
-                }
                 return root_->subtr_sz_ - lower_cnt - upper_cnt;
 
             }
@@ -291,9 +317,7 @@ namespace tree {
 
             // BIG FIVE
             ~rb_tree_t() {
-                using it_nds = typename std::vector<node_t*>::iterator;
-                for (it_nds it = nodes_.begin(), itend = nodes_.end(); it != itend; ++it)
-                    delete *it;
+                for (auto *node : nodes_) delete node;
             }
 
             rb_tree_t(const rb_tree_t& tr) : rb_tree_t() {
@@ -323,7 +347,7 @@ namespace tree {
     };
 
 
-    const int MAX_NODES_IN_DUMP = 512;
+    constexpr int MAX_NODES_IN_DUMP = 512;
 
     template<typename KeyT, typename Comp>
     void rb_tree_t<KeyT, Comp>::dump() {
