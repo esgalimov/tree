@@ -41,7 +41,9 @@ int main() try {
     compare_answers(std::cout, tr_ans, st_ans);
     #endif
 
-    return 0;
+}
+catch (const std::exception& exc) {
+    std::cerr << "Something wrong: " << exc.what() << std::endl;
 }
 catch (const std::exception& exc) {
     std::cerr << "Something wrong: " << exc.what() << std::endl;

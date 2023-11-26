@@ -365,9 +365,12 @@ namespace tree {
                 std::swap(*this, tmp);
             }
 
-            rb_tree_t(rb_tree_t&& tr) noexcept : nodes_(std::exchange(tr.nodes_, nodes_)),
-                                                   nil_(std::exchange(tr.nil_,   nil_)),
-                                                  root_(std::exchange(tr.root_,  root_)) {}
+            rb_tree_t(rb_tree_t&& tr) noexcept :
+                nodes_(tr.nodes_), nil_(tr.nil_), root_(tr.root_) {
+                    tr.nodes_.clear();
+                    tr.nil_ = nullptr;
+                    tr.root_ = nullptr;
+                }
 
             rb_tree_t& operator=(const rb_tree_t& tr) {
                 if (this == &tr) return *this;
