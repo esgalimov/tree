@@ -3,7 +3,7 @@
 #include <vector>
 #include "comparing.hpp"
 
-int main() {
+int main() try {
     std::string str;
     int key = 0, lower = 0, upper = 0, cnt = 0;
 
@@ -42,6 +42,9 @@ int main() {
     #endif
 
     return 0;
+}
+catch (const std::exception& exc) {
+    std::cerr << "Something wrong: " << exc.what() << std::endl;
 }
 
 

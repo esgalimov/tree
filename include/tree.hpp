@@ -4,6 +4,7 @@
 #include <functional>
 #include <vector>
 #include <stack>
+#include <utility>
 #include <stdexcept>
 
 namespace tree {
@@ -27,14 +28,28 @@ namespace tree {
         class node_wrap_t final {
             node_iter ptr_;
         public:
-            node_wrap_t(node_iter ptr) : ptr_(ptr) { assert(ptr_); }
+            node_wrap_t(node_iter ptr) : ptr_(ptr) {
+                if (ptr_ == nullptr)
+                    throw std::runtime_error("node_wrap_t: cannot be created from nullptr");
+            }
 
             KeyT operator*() const { return ptr_->key_; }
 
             size_t get_subtr_sz() const { return ptr_->subtr_sz_; }
-            size_t get_left_subtr_sz()  const { return ptr_->left_->subtr_sz_; };
-            size_t get_right_subtr_sz() const { return ptr_->right_->subtr_sz_; };
             color_t get_color() const { return ptr_->color_; }
+
+            void go_parent() {
+                if (ptr_->parent_) ptr_ = ptr_->parent_;
+                else throw std::runtime_error("node_wrap_t: cannot go to parent");
+            }
+            void go_left() {
+                if (ptr_->left_) ptr_ = ptr_->left_;
+                else throw std::runtime_error("node_wrap_t: cannot go to left");
+            }
+            void go_right() {
+                if (ptr_->right_) ptr_ = ptr_->right_;
+                else throw std::runtime_error("node_wrap_t: cannot go to right");
+            }
 
             bool equal(node_iter node) const { return ptr_ == node; }
 
@@ -320,11 +335,17 @@ namespace tree {
 
                 size_t lower_cnt = 0, upper_cnt = 0;
 
-                if (!first.equal(nil_))
-                    lower_cnt = first.get_left_subtr_sz() + first.count_parents_left_sizes();
+                if (!first.equal(nil_)) {
+                    lower_cnt = first.count_parents_left_sizes();
+                    first.go_left();
+                    lower_cnt += first.get_subtr_sz();
+                }
 
-                if (!second.equal(nil_))
-                    upper_cnt = second.get_right_subtr_sz() + 1 + second.count_parents_right_sizes();
+                if (!second.equal(nil_)) {
+                    upper_cnt = 1 + second.count_parents_right_sizes();
+                    second.go_right();
+                    upper_cnt += second.get_subtr_sz();
+                }
 
                 return root_->subtr_sz_ - lower_cnt - upper_cnt;
 
@@ -338,28 +359,32 @@ namespace tree {
             }
 
             rb_tree_t(const rb_tree_t& tr) : rb_tree_t() {
-                copy_tree(tr);
+                rb_tree_t tmp;
+                tmp.copy_tree(tr);
+
+                std::swap(*this, tmp);
             }
 
-            rb_tree_t(rb_tree_t&& tr) noexcept :
-                nodes_(std::move(tr.nodes_)), nil_(tr.nil_), root_(tr.root_) {}
+            rb_tree_t(rb_tree_t&& tr) noexcept : nodes_(std::exchange(tr.nodes_, nodes_)),
+                                                   nil_(std::exchange(tr.nil_,   nil_)),
+                                                  root_(std::exchange(tr.root_,  root_)) {}
 
             rb_tree_t& operator=(const rb_tree_t& tr) {
                 if (this == &tr) return *this;
 
-                assert(nodes_.empty());
+                rb_tree_t tmp;
+                tmp.copy_tree(tr);
 
-                nodes_.erase(std::next(nodes_.begin()), nodes_.end());
-                copy_tree(tr);
+                std::swap(*this, tmp);
                 return *this;
             }
 
             rb_tree_t& operator=(rb_tree_t&& tr) noexcept {
                 if (this == &tr) return *this;
 
-                nodes_ = std::move(tr.nodes_);
-                nil_ = tr.nil_;
-                root_ = tr.root_;
+                std::swap(nodes_, tr.nodes_);
+                std::swap(nil_, tr.nil_);
+                std::swap(root_, tr.root_);
 
                 return *this;
             }
