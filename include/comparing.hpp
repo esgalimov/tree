@@ -35,6 +35,7 @@ std::vector<T> get_tree_ans(std::ostream& os, const std::vector<T>& data, const 
             if (data[i] >= data[i + 1]) tr_ans.push_back(0);
             else
                 tr_ans.push_back(tr.distance(tr.lower_bound(data[i]), tr.upper_bound(data[i + 1])));
+
             next_q++;
             i++;
         }
