@@ -45,8 +45,3 @@ int main() try {
 catch (const std::exception& exc) {
     std::cerr << "Something wrong: " << exc.what() << std::endl;
 }
-catch (const std::exception& exc) {
-    std::cerr << "Something wrong: " << exc.what() << std::endl;
-}
-
-
