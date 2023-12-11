@@ -1,4 +1,8 @@
-# Red-black tree with fast distance
+# Red-black tree
+There are two levels of this task:
+* level_1: `k key` - adds key to tree, `q start stop` - print number of elements between start and stop.
+* level_2: `k key` - adds key to tree, `m pos` - print key on position pos, `n key` - print number of elements lower than key
+How to launch:
 1. `cmake -B build` or if graphviz is installed on your computer `cmake -B build -DCMAKE_CXX_FLAGS="-DDUMP"` to have tree graphviz dumps in dumps directory.
 2. `cd build`.
 3. `make`.

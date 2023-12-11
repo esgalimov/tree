@@ -53,6 +53,8 @@ namespace tree {
 
             bool equal(node_iter node) const { return ptr_ == node; }
 
+            bool is_nil() const { return ptr_->subtr_sz_ == 0; }
+
             size_t count_parents_left_sizes() const {
                 node_iter curr = ptr_;
                 size_t lower_cnt = 0;
@@ -333,22 +335,77 @@ namespace tree {
             size_t distance(node_wrap_t first, node_wrap_t second) const {
                 if (first.equal(nil_) && second.equal(nil_)) return 0;
 
-                size_t lower_cnt = 0, upper_cnt = 0;
+                return root_->subtr_sz_ - get_lower_cnt(first) - get_upper_cnt(second);
+            }
 
-                if (!first.equal(nil_)) {
-                    lower_cnt = first.count_parents_left_sizes();
-                    first.go_left();
-                    lower_cnt += first.get_subtr_sz();
+        private:
+            node_iter get_subtree_min(node_iter sub_root) const {
+                while (sub_root->left_ != nil_) sub_root = sub_root->left_;
+
+                return sub_root;
+            }
+
+            node_iter get_subtree_max(node_iter sub_root) const {
+                while (sub_root->right_ != nil_) sub_root = sub_root->right_;
+
+                return sub_root;
+            }
+
+        public:
+
+            size_t get_lower_cnt(node_wrap_t node) const {
+                size_t lower_cnt = 0;
+
+                if (!node.equal(nil_)) {
+                    lower_cnt = node.count_parents_left_sizes();
+                    node.go_left();
+                    lower_cnt += node.get_subtr_sz();
                 }
 
-                if (!second.equal(nil_)) {
-                    upper_cnt = 1 + second.count_parents_right_sizes();
-                    second.go_right();
-                    upper_cnt += second.get_subtr_sz();
+                return lower_cnt;
+            }
+
+            size_t get_upper_cnt(node_wrap_t node) const {
+                size_t upper_cnt = 0;
+
+                if (!node.equal(nil_)) {
+                    upper_cnt = 1 + node.count_parents_right_sizes();
+                    node.go_right();
+                    upper_cnt += node.get_subtr_sz();
                 }
 
-                return root_->subtr_sz_ - lower_cnt - upper_cnt;
+                return upper_cnt;
+            }
 
+            size_t get_lower_cnt(KeyT key) const {
+                if (key > get_subtree_max(root_)->key_) return root_->subtr_sz_;
+                return get_lower_cnt(lower_bound(key));
+            }
+
+            size_t get_upper_cnt(KeyT key) const {
+                if (key < get_subtree_min(root_)->key_) return root_->subtr_sz_;
+                return get_upper_cnt(upper_bound(key));
+            }
+
+            node_wrap_t get_k_smallest_elem(size_t pos) const {
+                if (pos <= 0)
+                    throw std::runtime_error("Position must be positive");
+
+                if (pos >= root_->subtr_sz_) return node_wrap_t{get_subtree_max(root_)};
+
+                node_iter curr = get_subtree_min(root_);
+                size_t cnt = 0;
+
+                while (curr->left_->subtr_sz_ + 1 + cnt != pos) {
+                    if (curr->left_->subtr_sz_ + 1 + cnt <  pos && curr->subtr_sz_ + cnt < pos) {
+                        curr = curr->parent_;
+                    }
+                    else {
+                        cnt += curr->left_->subtr_sz_ + 1;
+                        curr = get_subtree_min(curr->right_);
+                    }
+                }
+                return node_wrap_t{curr};
             }
 
             void dump();

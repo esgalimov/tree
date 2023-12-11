@@ -1,0 +1,12 @@
+digraph
+{
+    node_info[shape = record, label = "{root = 0x6000026bc270}"];
+
+    node_info->node_0x6000026bc270 [color = "green"];
+    node_0x6000026bc270[shape = Mrecord, label = "{{0x6000026bc270} | {parent =  0x0} | {key = 1} | {subtr_sz = 2} | {nil | 0x6000026bc240}}",
+ style="filled", fillcolor="grey"];
+    node_0x6000026bc240[shape = Mrecord, label = "{{0x6000026bc240} | {parent =  0x6000026bc270} | {key = 2} | {subtr_sz = 1} | {nil | nil}}",
+ style="filled", fillcolor="red"];
+    node_0x6000026bc270->node_0x6000026bc240
+
+}
