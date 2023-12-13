@@ -64,7 +64,11 @@ std::vector<T> get_set_ans(std::ostream& os, const std::vector<T>& data,
     for (int i = 0, iend = data.size(); i < iend; ++i) {
         if (i != *next_m && i != *next_n) st.insert(data[i]);
         else if (i == *next_m) {
-            if (data[i] >= st.size()) st_ans.push_back(*std::prev(st.end(), 1));
+            if (data[i] >= st.size()) {
+                if (st.size() != 0) st_ans.push_back(*std::prev(st.end(), 1));
+
+                else throw std::runtime_error("Set is empty");
+            }
             else st_ans.push_back(*std::next(st.begin(), data[i] - 1));
             next_m++;
         }

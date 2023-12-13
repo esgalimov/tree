@@ -340,12 +340,14 @@ namespace tree {
 
         private:
             node_iter get_subtree_min(node_iter sub_root) const {
+                if (sub_root == nil_ || sub_root == nullptr) return nil_;
                 while (sub_root->left_ != nil_) sub_root = sub_root->left_;
 
                 return sub_root;
             }
 
             node_iter get_subtree_max(node_iter sub_root) const {
+                if (sub_root == nil_ || sub_root == nullptr) return nil_;
                 while (sub_root->right_ != nil_) sub_root = sub_root->right_;
 
                 return sub_root;
@@ -388,8 +390,10 @@ namespace tree {
             }
 
             node_wrap_t get_k_smallest_elem(size_t pos) const {
-                if (pos <= 0)
-                    throw std::runtime_error("Position must be positive");
+                if (root_->subtr_sz_ == 0)
+                    throw std::runtime_error("Tree is empty, cannot call get_k_smallest_elem");
+
+                if (pos <= 0) throw std::runtime_error("Position must be positive");
 
                 if (pos >= root_->subtr_sz_) return node_wrap_t{get_subtree_max(root_)};
 
